@@ -67,7 +67,7 @@ public class JoinCorpService implements JoinCorpDao{
 	@Override
 	public boolean modifyCorp(JoinCorpDto joinCorpDto) {
 		
-		
+		System.out.println("test");
 		sqlSession.update("corp.modifyCorp",joinCorpDto);
 		return true;
 	}
