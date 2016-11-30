@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.reservation">
+
+	<select id="corpselect" resultType="com.delivery.rocket.member.reservation.dto.ReservationDto">
+		SELECT
+		c_id,c_name
+		FROM corp
+	</select>
+		<select id="pkindselect" resultType="com.delivery.rocket.member.reservation.dto.ReservationDto">
+		SELECT 
+		* 
+		FROM parcels_kind
+	</select>
+			<select id="facselect" resultType="com.delivery.rocket.member.reservation.dto.ReservationDto">
+		SELECT 
+		f.f_id,f.f_name,f.f_address,f.f_tel,f.f_gps,fk.f_kind_name,cm.manager_id,cm.manager_name 
+		FROM facilities f,facility_kind fk,corp_manager cm 
+		Where f.f_kind_id=fk.f_kind_id and f.manager_id = cm.manager_id and f.f_address like #{f_address}
+	</select>
+	<select id="corpmanagerselect" resultType="com.delivery.rocket.member.reservation.dto.ReservationDto">
+		SELECT 
+		manager_id 
+		FROM facilities  
+		WHERE f_id = #{f_id}
+	</select>
+	<insert id="insertparcelat">
+	insert into PARCELAT VALUES (#{parcelat_id},#{p_id},#{f_id})
+	</insert>
+	<insert id="insertparcelmanage">
+	insert into PARCELMANAGE VALUES(#{delivery_id},#{manager_id},#{m_id},#{del_state_id},#{p_id})
+	</insert>
+	<insert id="insertparcels">
+	insert into PARCELS VALUES(#{p_id},#{p_isfragile},#{p_s_address},#{p_r_address},#{p_s_name},#{p_r_name},#{p_s_tel},#{p_r_tel},#{p_kind_id},sysdate,null)
+	</insert>
+<!-- 
+	<update id="pwdchange" parameterType="com.delivery.rocket.member.info.dto.InfoDto">
+		update 
+		member 
+		set m_pwd=#{m_pwd} 
+		where m_id = #{m_id}
+	</update>   -->
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.manager">
+
+	<select id="managerinsert"
+		resultType="com.delivery.rocket.corp.managermanagement.dto.ManagerManagementDto">
+		INSERT
+		INTO corp_manager(manager_id, manager_name, c_id,
+		manager_pwd)
+		VALUES(#{manager_id}, #{manager_name}, #{c_id},
+		#{manager_pwd})
+	</select>
+	<select id="managerlist"
+		resultType="com.delivery.rocket.corp.managermanagement.dto.ManagerManagementDto">
+		SELECT
+		*
+		FROM corp_manager
+		WHERE c_id = #{c_id}
+	</select>
+	<delete id="managerdelete"
+		parameterType="com.delivery.rocket.corp.managermanagement.dto.ManagerManagementDto">
+		DELETE FROM corp_manager
+		WHERE manager_id = #{manager_id}
+	</delete>
+	<update id="managerupdate"
+		parameterType="com.delivery.rocket.corp.managermanagement.dto.ManagerManagementDto">
+		UPDATE CORP_MANAGER SET MANAGER_NAME=#{manager_name},
+		MANAGER_PWD=#{manager_pwd}
+		WHERE manager_id = #{manager_id}
+	</update>
+	<!-- <insert id="insert" parameterType="dept.dto.DeptDto"> insert into dept 
+		(deptno, dname, loc) values(#{deptno},#{dname},#{loc}) </insert> -->
+	<!-- <delete id="delete" parameterType="dept.dto.DeptDto"> delete from dept 
+		where deptno=#{deptno} </delete> <update id="update" parameterType="dept.dto.DeptDto"> 
+		update dept set dname=#{dname}, loc=#{loc} where deptno=#{deptno} </update> -->
+</mapper>

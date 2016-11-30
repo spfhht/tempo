@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.qna">
+
+	<select id="corpList" resultType="com.delivery.rocket.qna.dto.QnADTO">
+		SELECT c_name, c_id
+		FROM CORP
+	</select>
+	<select id="listCount" resultType="int">
+		SELECT COUNT(*)
+		FROM QNA
+		WHERE
+		c_id LIKE #{c_id}
+	</select>
+	<select id="boardList" resultType="com.delivery.rocket.qna.dto.QnADTO">
+		select * from (select rownum
+		rnum, q.Q_ID, c.C_NAME, q.M_ID, q.Q_TITLE, q.Q_CONTENT, q.REPLY_ID,
+		q.SORT, q.TAB, q.HIT, case when
+		substr(to_char(q.regdate,'YYYYMMDDHH24MISS'),1,8)=substr(to_char(sysdate,'YYYYMMDDHH24MISS'),1,8)
+		then
+		substr(to_char(q.regdate,'YYYYMMDDHH24MISS'),9,2)||':'||substr(to_char(q.regdate,'YYYYMMDDHH24MISS'),11,2)||':'||substr(to_char(q.regdate,'YYYYMMDDHH24MISS'),13,2)
+		else
+		substr(to_char(q.regdate,'YYYYMMDDHH24MISS'),3,2)||'/'||substr(to_char(q.regdate,'YYYYMMDDHH24MISS'),5,2)||'/'||substr(to_char(q.regdate,'YYYYMMDDHH24MISS'),7,2)
+		end as REGDATE, q.C_ID
+		from (select * from QNA order by reply_id asc,
+		SORT asc,Q_ID DESC) q, CORP c
+		where q.c_id = c.c_id AND q.c_id LIKE #{c_id}) 
+	</select>
+	<select id="boardWriter" resultType="com.delivery.rocket.qna.dto.QnADTO">
+		SELECT *
+		FROM QNA
+		WHERE Q_ID=#{q_id}
+	</select>
+	<delete id="boardDelete_admin" parameterType="int">
+		DELETE
+		FROM QNA
+		WHERE
+		Q_ID=#{q_id}
+	</delete>
+	<delete id="boardDelete" parameterType="int">
+		DELETE
+		FROM QNA
+		WHERE
+		Q_ID=#{q_id} AND q_pwd=#{q_pwd}
+	</delete>
+	<insert id="boardInsert" parameterType="com.delivery.rocket.qna.dto.QnADTO">
+		INSERT INTO QNA (C_ID,
+		Q_ID, M_ID, Q_PWD, Q_TITLE, Q_CONTENT, Q_FILE,REPLY_ID, SORT, TAB,
+		HIT, REGDATE)
+		VALUES(#{c_id},#{q_id},#{m_id,jdbcType=VARCHAR},#{q_pwd, jdbcType=VARCHAR},#{q_title},#{q_content},#{q_file,
+		jdbcType=VARCHAR},#{reply_id},#{sort},#{tab},#{hit},SYSDATE)
+	</insert>
+	<insert id="boardInsert_corp" parameterType="com.delivery.rocket.qna.dto.QnADTO">
+		INSERT INTO QNA (C_ID,
+		Q_ID, M_ID, Q_PWD, Q_TITLE, Q_CONTENT, Q_FILE,REPLY_ID, SORT, TAB,
+		HIT, REGDATE)
+		VALUES(#{c_id},#{q_id},#{c_id,jdbcType=VARCHAR},#{q_pwd, jdbcType=VARCHAR},#{q_title},#{q_content},#{q_file,
+		jdbcType=VARCHAR},#{reply_id},#{sort},#{tab},#{hit},SYSDATE)
+	</insert>
+	<update id="readCountUpdate" parameterType="int">
+		UPDATE QNA
+		SET HIT =
+		HIT+1
+		WHERE Q_ID = #{q_id}
+	</update>
+	<select id="detail" resultType="com.delivery.rocket.qna.dto.QnADTO">
+		SELECT q.Q_ID, c.C_NAME,
+		q.Q_TITLE, q.Q_CONTENT, q.C_ID, q.M_ID, q.REPLY_ID, q.Q_FILE,
+		q.REGDATE, q.HIT, q.SORT, q.TAB, q.q_pwd
+		FROM QNA q, CORP c
+		WHERE q.C_ID=c.C_ID
+		AND Q_ID = #{q_id}
+	</select>
+	<select id="reply" resultType="int">
+		select q_id, m_id, reply_content,
+		reply_date from qna_reply
+		where q_id = #{q_id}
+		order by reply_date asc
+	</select>
+	<select id="qid" resultType="String">
+		SELECT MAX(Q_ID)
+		FROM QNA
+	</select>
+	<update id="boardModify" parameterType="boolean">
+		UPDATE QNA
+		SET HIT =
+		HIT+1
+		WHERE Q_ID = #{q_id}
+	</update>
+</mapper>

@@ -1,0 +1,25 @@
+﻿@charset "utf-8";
+/* CSS Document */
+/*RESET*/
+*{margin:0; padding:0;}
+	ul,ol,dl{list-style:none;}
+	img , video{max-width:100%; border:0;}
+	a{text-decoration:none; color:#333; display:inline-block;}
+	table{border-collapse:collapse; border-spacing:0;}
+	input , select {vertical-align:middle;}
+	html{height:100%;}
+	label{cursor:pointer;}
+	i , em , address{font-style:normal; font-weight:normal;}
+	
+/*슬라이드 몸통 */
+
+.slide{margin-left : 200px; position:fixed; background : gray; text-align:center; position:relative; width: 500px; margin: 0 auto; display: block; height:375px;}
+
+.slide_ul{display: block;}
+.slide_ul>li{position:absolute; top:0; left:0; list-style:none;z-index:10; display: block;}
+.slide_ul>li img{}
+li{list-style: none;}
+
+.show{display:block;}
+
+

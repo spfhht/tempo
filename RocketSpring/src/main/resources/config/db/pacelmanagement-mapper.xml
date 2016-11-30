@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="parcelmanagement">
+
+	<select id="getParcelList" parameterType="java.util.HashMap" resultType="com.delivery.rocket.corp.parcelmanagement.dto.ParcelManagementDto">
+		SELECT *
+		FROM (select rownum rnum, pm.DELIVERY_ID ,ds.DELIVERY_STATE
+		,pk.P_KIND_NAME,p.P_S_NAME,p.P_S_ADDRESS,p.P_R_NAME,p.P_R_ADDRESS,f.F_GPS, p.P_ID
+		FROM PARCELMANAGE pm, PARCELS p, DELIVERY_STATE
+		ds,PARCELS_KIND pk,PARCELAT pa,FACILITIES f ,CORP_MANAGER cm
+		WHERE
+		pm.DEL_STATE_ID = ds.DEL_STATE_ID AND pm.P_ID =p.P_ID AND p.P_KIND_ID = pk.P_KIND_ID AND p.P_ID = pa.P_ID AND pa.F_ID = f.F_ID AND
+		pm.MANAGER_ID = cm.MANAGER_ID AND cm.MANAGER_ID = #{manager_id} and
+		pm.MANAGER_ID = f.MANAGER_ID)
+		WHERE rnum between #{startrow} and #{endrow}
+	</select>
+
+	<select id="getListCount" resultType="int">
+		SELECT
+		count(pm.DELIVERY_ID)
+		FROM
+		PARCELMANAGE pm, PARCELS p, DELIVERY_STATE ds,PARCELS_KIND pk,PARCELAT pa,FACILITIES f ,CORP_MANAGER cm
+		WHERE
+		pm.DEL_STATE_ID = ds.DEL_STATE_ID AND pm.P_ID =p.P_ID AND p.P_KIND_ID = pk.P_KIND_ID AND p.P_ID = pa.P_ID AND pa.F_ID = f.F_ID
+		AND pm.MANAGER_ID = cm.MANAGER_ID AND cm.MANAGER_ID = #{manager_id} and pm.MANAGER_ID = f.MANAGER_ID
+	</select>
+
+	<select id="isParcel" resultType="com.delivery.rocket.corp.parcelmanagement.dto.ParcelManagementDto">
+		SELECT *
+		FROM parcelmanage
+		WHERE delivery_id = #{delivery_id}
+	</select>
+
+	<select id="getDetail" parameterType = "java.util.HashMap" resultType="com.delivery.rocket.corp.parcelmanagement.dto.ParcelManagementDto">
+		SELECT
+		ds.DELIVERY_STATE ,pk.P_KIND_NAME,p.P_S_NAME,p.P_S_ADDRESS,p.P_R_NAME,p.P_R_ADDRESS,f.F_GPS, p.P_ID
+		FROM
+		PARCELMANAGE pm, PARCELS p, DELIVERY_STATE
+		ds,PARCELS_KIND pk,PARCELAT pa,FACILITIES f ,CORP_MANAGER cm
+		WHERE
+		pm.DELIVERY_ID = #{delivery_id} AND pm.DEL_STATE_ID = ds.DEL_STATE_ID AND pm.P_ID = p.P_ID AND p.P_KIND_ID = pk.P_KIND_ID
+		AND p.P_ID =
+		pa.P_ID AND pa.F_ID = f.F_ID AND pm.MANAGER_ID = cm.MANAGER_ID AND cm.MANAGER_ID = #{manager_id}
+		AND pm.MANAGER_ID = f.MANAGER_ID
+	</select>
+
+	<select id="getCorpId" parameterType="String" resultType="com.delivery.rocket.corp.parcelmanagement.dto.ParcelManagementDto">
+		select * from corp_manager where manager_id = #{manager_id}
+	</select>
+
+	<select id="getSearchList" parameterType="java.util.HashMap" resultType="com.delivery.rocket.corp.parcelmanagement.dto.ParcelManagementDto">
+		SELECT *
+		FROM (select rownum rnum, pm.DELIVERY_ID ,ds.DELIVERY_STATE
+		,pk.P_KIND_NAME,p.P_S_NAME,p.P_S_ADDRESS,p.P_R_NAME,p.P_R_ADDRESS,f.F_GPS, p.P_ID
+		FROM PARCELMANAGE pm, PARCELS p, DELIVERY_STATE
+		ds,PARCELS_KIND pk,PARCELAT pa,FACILITIES f ,CORP_MANAGER cm
+		WHERE
+		pm.DEL_STATE_ID = ds.DEL_STATE_ID AND pm.P_ID =p.P_ID AND p.P_KIND_ID = pk.P_KIND_ID AND p.P_ID = pa.P_ID AND pa.F_ID = f.F_ID AND
+		pm.MANAGER_ID = cm.MANAGER_ID AND cm.MANAGER_ID = #{manager_id} and
+		pm.MANAGER_ID = f.MANAGER_ID AND ${type} like '%${keyword}%')
+		WHERE rnum between #{startrow} and #{endrow}
+	</select>
+
+	<select id="getSearchListCount" parameterType="java.util.HashMap" resultType="int">
+		SELECT
+		count(pm.DELIVERY_ID)
+		FROM
+		PARCELMANAGE pm, PARCELS p, DELIVERY_STATE ds,PARCELS_KIND pk,PARCELAT pa,FACILITIES f ,CORP_MANAGER cm
+		WHERE
+		pm.DEL_STATE_ID = ds.DEL_STATE_ID AND pm.P_ID =p.P_ID AND p.P_KIND_ID = pk.P_KIND_ID AND p.P_ID = pa.P_ID AND pa.F_ID = f.F_ID
+		AND pm.MANAGER_ID = cm.MANAGER_ID AND cm.MANAGER_ID = #{manager_id} and pm.MANAGER_ID = f.MANAGER_ID
+		AND ${type} like '%${keyword}%'
+	</select>
+
+	<update id="parcelmanageUpdate" parameterType="java.util.HashMap">
+		update parcelmanage
+		set manager_id = #{manager_id}
+		where p_id = (select p_id from parcelmanage where delivery_id = #{delivery_id})
+	</update>
+
+	<update id="parcelatUpdate" parameterType="java.util.HashMap">
+		update parcelat
+		set f_id = (select f_id from facilities where manager_id = #{manager_id})
+		where p_id = (select p_id from parcelmanage where delivery_id = #{delivery_id})
+	</update>
+
+	<update id="parcelDelStateUpdate" parameterType="java.util.HashMap" >
+		update 
+		PARCELMANAGE 
+		set DEL_STATE_ID = #{del_state_id} 
+		where P_ID = (select p_id from PARCELMANAGE where delivery_id = #{delivery_id})
+	</update>
+
+</mapper>

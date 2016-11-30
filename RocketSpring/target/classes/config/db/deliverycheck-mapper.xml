@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.deliverycheck">
+
+	<select id="show" parameterType="string" resultType="com.delivery.rocket.member.deliverycheck.dto.DeliveryCheckDto">
+		SELECT
+		pm.DELIVERY_ID, ds.DELIVERY_STATE, f.F_GPS, p.P_S_NAME, p.P_S_ADDRESS, p.P_R_NAME, p.P_R_ADDRESS, p.P_S_DATE, p.P_R_DATE
+		FROM PARCELMANAGE pm, PARCELS p ,DELIVERY_STATE ds, PARCELAT pa, FACILITIES f
+		WHERE p.P_ID = pm.P_ID and pm.DELIVERY_ID = #{delivery_id} and ds.DEL_STATE_ID = pm.DEL_STATE_ID and p.P_ID = pa.P_ID and pa.F_ID = f.F_ID
+	</select>
+
+	<select id="showList" resultType="com.delivery.rocket.member.deliverycheck.dto.DeliveryCheckDto">
+		SELECT
+		m.M_NAME,pm.DELIVERY_ID ,ds.DELIVERY_STATE ,pk.P_KIND_NAME,p.P_S_NAME,p.P_S_ADDRESS,p.P_R_NAME,p.P_R_ADDRESS,f.F_GPS, p.P_S_DATE, p.P_R_DATE
+		FROM 
+		MEMBER
+		m,PARCELMANAGE pm, PARCELS p, DELIVERY_STATE ds,PARCELS_KIND pk,PARCELAT pa,FACILITIES f
+		WHERE
+		m.M_ID = #{m_id} AND m.M_ID = pm.M_ID AND pm.DEL_STATE_ID = ds.DEL_STATE_ID AND pm.P_ID=p.P_ID 
+		AND p.P_KIND_ID = pk.P_KIND_ID AND p.P_ID = pa.P_ID AND pa.F_ID = f.F_ID
+	</select>
+
+	<select id="hasParcel" parameterType="string" resultType="com.delivery.rocket.member.deliverycheck.dto.DeliveryCheckDto">
+		SELECT DELIVERY_ID
+		FROM PARCELMANAGE
+		WHERE DELIVERY_ID = #{delivery_id}
+	</select>
+
+</mapper>

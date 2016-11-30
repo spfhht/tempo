@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="corp">
+
+<insert id="joinCorp" parameterType="com.delivery.rocket.admin.joincorp.dto.JoinCorpDto">
+insert into corp (C_NAME,C_ID,C_PWD,C_ADDRESS,C_TEL,C_NUM,JOIN_DATE)
+values(#{c_name},#{c_id},#{c_pwd},#{c_address},#{c_tel},(select max(c_num) + 1 from corp),sysdate)
+
+</insert>
+
+<select id="getOneCorp" parameterType="string"
+resultType="com.delivery.rocket.admin.joincorp.dto.JoinCorpDto">
+select *
+from corp
+where c_id = #{c_id}
+
+</select>
+
+
+
+
+
+<select id="getCorpList" parameterType = "java.util.HashMap"
+resultType = "com.delivery.rocket.admin.joincorp.dto.JoinCorpDto">
+
+select b.c_name, b.c_id, b.c_address, b.c_tel, b.c_num, b.join_date
+from
+(select a.c_name, a.c_id, a.c_address, a.c_tel, a.c_num, a.join_date, rownum rnum 
+from 
+(select c_name, c_id, c_address, c_tel, c_num, join_date from corp order by c_num) a 
+
+) b
+where rnum between #{startCorpNum} and #{endCorpNum}
+group by b.c_name, b.c_id, b.c_address, b.c_tel, b.c_num, b.join_date order by b.c_num
+
+
+</select>
+
+<select id="getTotalNum" resultType = "int">
+select
+count(c_num)
+from corp
+
+</select>
+
+<delete id="deleteCorp" parameterType="String">
+delete
+from corp
+where c_id = #{c_id}
+</delete>
+
+<update id="modifyCorp" parameterType="com.delivery.rocket.admin.joincorp.dto.JoinCorpDto">
+update corp
+set
+c_name = #{c_name},
+c_tel = #{c_tel},
+c_address = #{c_address}
+where c_id = #{c_id}
+
+
+</update>
+<select id="searchCorp" parameterType="java.util.HashMap" resultType="com.delivery.rocket.admin.joincorp.dto.JoinCorpDto">
+    select
+		b.c_id, b.c_num, b.c_name,
+		b.c_pwd, b.join_date, b.c_tel,
+		b.c_address
+		from (select
+		a.c_id, a.c_num, a.c_name,
+		a.c_pwd, a.join_date, a.c_tel,
+		a.c_address, rownum rnum
+		from (select
+		c_id, c_num, c_name,
+		c_pwd, join_date,
+		c_tel, c_address
+		from corp
+		where ${type} like '%${keyword}%'
+		order by c_num ) a
+		) b 
+		where rnum between #{startCorpNum} and #{endCorpNum}
+		group by
+		b.c_id, b.c_num, b.c_name,
+		b.c_pwd, b.join_date, b.c_tel,
+		b.c_address
+		order by b.c_num
+
+</select>
+<select id="getSearchTotalNum" resultType="int">
+select
+count(c_num)
+from corp
+where ${type} like '%${keyword}%'
+</select>
+	
+</mapper>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.facility">
+
+
+	<!-- <select id="findManager" resultType="rocket.corp.facility.dto.FacilityDto" 
+		> SELECT manager_id FROM corp_manager WHERE manager_id = #{manager_id} </select> 
+		<select id="findId" resultType="rocket.corp.facility.dto.FacilityDto" > SELECT 
+		f_id FROM facilities WHERE f_id = #{f_id} </select> -->
+
+
+	<select id="list" resultType="com.delivery.rocket.corp.facility.dto.FacilityDto">
+		select f. f_id, f.f_name, f.f_address, f.f_tel, f.f_gps, f.manager_id, m.manager_name,f.f_kind_id, k.f_kind_name
+		from facilities f, corp_manager m, facility_kind k, corp c
+		where f.manager_id =m.manager_id and f.f_kind_id=k.f_kind_id and c.c_id=#{c_id} and m.c_id=c.c_id
+		order by f_id asc
+	</select>
+	
+	
+	
+	<select id="list2" resultType="com.delivery.rocket.corp.facility.dto.FacilityDto">
+		select f. f_id, f.f_name, f.f_address, f.f_tel, f.f_gps, f.manager_id, m.manager_name,f.f_kind_id, k.f_kind_name
+		from facilities f, corp_manager m, facility_kind k 
+		where f.manager_id = m.manager_id and f.f_kind_id=k.f_kind_id and f.f_id=#{f_id}
+		order by f_id asc
+	</select>
+	
+	<select id="list31" resultType="com.delivery.rocket.corp.facility.dto.FacilityDto">
+		select f. f_id, f.f_name, f.f_address, f.f_tel, f.f_gps, f.manager_id, m.manager_name,f.f_kind_id, k.f_kind_name
+		from facilities f, corp_manager m, facility_kind k 
+		where f.manager_id = m.manager_id and f.f_kind_id=k.f_kind_id and f.f_id=#{keyfield} or f.f_name=#{keyfield}  
+		order by f_id asc
+	</select>
+		<select id="list32" resultType="com.delivery.rocket.corp.facility.dto.FacilityDto">
+		select f. f_id, f.f_name, f.f_address, f.f_tel, f.f_gps, f.manager_id, m.manager_name,f.f_kind_id, k.f_kind_name
+		from facilities f, corp_manager m, facility_kind k 
+		where f.manager_id = m.manager_id and f.f_kind_id=k.f_kind_id and f.f_id=#{keyfield}
+		order by f_id asc
+	</select>
+		<select id="list33" resultType="com.delivery.rocket.corp.facility.dto.FacilityDto">
+		select f. f_id, f.f_name, f.f_address, f.f_tel, f.f_gps, f.manager_id, m.manager_name,f.f_kind_id, k.f_kind_name
+		from facilities f, corp_manager m, facility_kind k 
+		where f.manager_id = m.manager_id and f.f_kind_id=k.f_kind_id and f.f_name=#{keyfield}  
+		order by f_id asc
+	</select>
+
+
+<select id="findId" resultType="com.delivery.rocket.corp.facility.dto.FacilityDto">
+		select f_id 
+		from facilities
+		where f_id=#{f_id}  
+	</select>
+	
+	
+	
+<select id="findManager" resultType="com.delivery.rocket.corp.facility.dto.FacilityDto">
+		select MANAGER_ID 
+		from CORP_MANAGER
+		where manager_id=#{manager_id}
+	</select>
+	
+	
+	
+
+	<select id="getlistcount" resultType="int">
+		select count(f_id)
+		from facilities
+	</select>
+
+
+	<insert id="insert" parameterType="com.delivery.rocket.corp.facility.dto.FacilityDto">
+		insert
+		into facilities (f_id,
+		f_name, f_address, f_tel, f_gps, manager_id, f_kind_id )
+		values(#{f_id},#{f_name},#{f_address},#{f_tel},#{f_gps},#{manager_id},#{f_kind_id})
+	</insert>
+
+
+	<delete id="delete" parameterType="com.delivery.rocket.corp.facility.dto.FacilityDto">
+
+		delete
+		from facilities
+		where f_id=#{f_id}
+	</delete>
+
+
+	<update id="update" parameterType="com.delivery.rocket.corp.facility.dto.FacilityDto">
+		update facilities
+		set
+		f_name=#{f_name},f_address=#{f_address},f_tel=#{f_tel},f_gps=#{f_gps},manager_id=#{manager_id},f_kind_id=#{f_kind_id}
+		where f_id=#{f_id}
+	</update>
+
+
+
+	<!-- <select id="userlogin" resultType="com.delivery.rocket.login.dto.LoginDto" 
+		> SELECT m_id,m_pwd,m_name,m_tel,m_address,m_detail_address,substr(to_char(m_birth,'YYYYMMDDHH24MISS'),1,8) 
+		as m_birth,m_email,m_group FROM member WHERE m_id = #{m_id} </select> <insert 
+		id="insert" parameterType="dept.dto.DeptDto"> insert into dept (deptno, dname, 
+		loc) values(#{deptno},#{dname},#{loc}) </insert> -->
+	<!-- <delete id="delete" parameterType="dept.dto.DeptDto"> delete from dept 
+		where deptno=#{deptno} </delete> <update id="update" parameterType="dept.dto.DeptDto"> 
+		update dept set dname=#{dname}, loc=#{loc} where deptno=#{deptno} </update> -->
+</mapper>

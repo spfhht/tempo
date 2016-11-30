@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.info">
+
+<!-- 	<select id="userlogin" resultType="com.delivery.rocket.login.dto.LoginDto" >
+		SELECT
+		m_id,m_pwd,m_name,m_tel,m_address,m_detail_address,substr(to_char(m_birth,'YYYYMMDDHH24MISS'),1,8) as m_birth,m_email,m_group 
+		FROM member 
+		WHERE m_id = #{m_id}
+	</select>
+	<select id="corplogin" resultType="com.delivery.rocket.login.dto.LoginDto">
+		SELECT 
+		* 
+		FROM corp 
+		WHERE c_id = #{c_id}
+	</select>
+	<select id="corpmanagerlogin" resultType="com.delivery.rocket.login.dto.LoginDto">
+		SELECT 
+		* 
+		FROM corp_manager 
+		WHERE manager_id = #{manager_id}
+	</select> -->
+	<!-- 	<insert id="insert" parameterType="dept.dto.DeptDto">
+		insert
+		into dept (deptno, dname, loc)
+		values(#{deptno},#{dname},#{loc})
+	</insert> -->
+  	<delete id="delete" parameterType="com.delivery.rocket.member.info.dto.InfoDto">
+		delete
+		from member
+		where m_id=#{m_id}
+	</delete> 
+	<update id="myinfoupdate" parameterType="com.delivery.rocket.member.info.dto.InfoDto">
+		update 
+		member 
+		set m_tel=#{m_tel},m_address=#{m_address},m_detail_address=#{m_detail_address},m_email=#{m_email}
+		where m_id = #{m_id}
+	</update> 
+	<update id="pwdchange" parameterType="com.delivery.rocket.member.info.dto.InfoDto">
+		update 
+		member 
+		set m_pwd=#{m_pwd} 
+		where m_id = #{m_id}
+	</update> 
+</mapper>
