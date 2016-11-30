@@ -13,5 +13,6 @@ public interface UserService {
 	void saveOrUpdate(User user);
 	
 	void delete(int id);
-	
+	 System.out.println("test");
 }
+
